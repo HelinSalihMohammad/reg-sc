@@ -1,6 +1,3 @@
-
-
-
 document.addEventListener("DOMContentLoaded", function () {
   const video = document.getElementById("video");
   const canvas = document.getElementById("canvas");
@@ -83,27 +80,27 @@ document.addEventListener("DOMContentLoaded", function () {
           localStorage.setItem(qrCodeData, "used");
 
           // Send the QR code data to Google Sheets (via Apps Script Web App)
-          fetch(
-           "https://script.google.com/macros/s/AKfycbzBVy9dRQFh8CjySBBqvrYRqQBFNX51lEutUtDOJWJA6o93vZiIEOwdXho8JeQXtTnmOA/exec",
-            {
-              method: "POST",
-              body: new URLSearchParams({
-                qrCode: qrCodeData, // Send the scanned QR code data
-              }),
-            }
-          )
-            .then((response) => response.text())
-            .then((responseData) => {
-              console.log(responseData); // Log the response from the server
-            })
-            .catch((error) => {
-              console.error("Error:", error); // Handle any errors
-            });
+           fetch('https://script.google.com/macros/s/AKfycbzBVy9dRQFh8CjySBBqvrYRqQBFNX51lEutUtDOJWJA6o93vZiIEOwdXho8JeQXtTnmOA/exec', {
+      method: 'POST',
+      body: new URLSearchParams({
+        qrCode: scannedQRCodeData // This is the QR code that the scanner reads
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success") {
+        console.log(data.message); // Successfully updated the status
+      } else {
+        console.error(data.message); // Error occurred, e.g., already used
+      }
+    });
+
         }
 
         isScanning = true; // Resume scanning after message is handled
       }
     }
+
 
     // Continue scanning the next frame
     requestAnimationFrame(scanQRCode);
